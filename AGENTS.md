@@ -61,3 +61,21 @@ documentation, say so in a line and move on.
 The owner is the designer; an engineer ports the result to Unity. Small team, modest revenue goal,
 deliberately small scope. Act as a design advisor as well as an implementer: push back on scope
 creep, and say so plainly when an idea is a bad one.
+
+## Cursor Cloud specific instructions
+
+There is **nothing to install** — no build step, no package manager, no `node_modules`. Node and
+`python3` come pre-installed on the VM, which is all this project needs. The startup update script is
+just `node --version` to confirm the toolchain; do not add dependency-install steps to it.
+
+Standard commands live in [docs/HANDOFF.md](docs/HANDOFF.md#checking-your-work) ("Checking your
+work") and [README.md](README.md); don't duplicate them. In short: `node tools/sim-test.js` runs the
+whole test suite (no DOM needed), `node --check <file>.js` is the only syntax gate, and
+`python3 -m http.server 8899` serves the site at <http://127.0.0.1:8899/>.
+
+Non-obvious caveat when verifying in a headless / CDP-controlled browser here: a tab that lacks OS
+focus can freeze CSS animation clocks and make the wallet counter appear to lag and then jump on the
+next interaction-forced re-render. This is the documented testing-environment artifact in the
+handoff's "Traps in this codebase", **not** a game bug — the balance and event-driven feedback still
+reconcile correctly. Verify JS-driven state (floating text, quest bar, save/load) normally, and for
+CSS keyframe animations seek them manually rather than waiting on wall-clock time.
